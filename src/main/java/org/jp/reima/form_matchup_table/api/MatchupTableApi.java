@@ -1,5 +1,6 @@
 package org.jp.reima.form_matchup_table.api;
 
+import org.jp.reima.form_matchup_table.domain.resource.Match;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,39 +24,39 @@ public interface MatchupTableApi {
      * @return memberId
      */
     @PutMapping("matches/{id}/members/{name}")
-    public ResponseEntity<String> joinMatch(@PathVariable("id") String matcheId, @PathVariable("name") String memberName);
+    public ResponseEntity<String> entryMatch(@PathVariable("id") String matchId, @PathVariable("name") String memberName);
     
     /**
      * マッチから退出する
      * @return memberId
      */
     @DeleteMapping("matches/{id}/members/{name}")
-    public ResponseEntity<String> leaveMatch(@PathVariable("id") String matcheId, @PathVariable("name") String memberName);
+    public ResponseEntity<String> leaveMatch(@PathVariable("id") String matchId, @PathVariable("name") String memberName);
     
     /**
      * マッチ情報を参照する
      * @return match data (json format)
      */
     @GetMapping("matches/{id}")
-    public ResponseEntity<String> findMatch(@PathVariable("id") String matcheId);
+    public ResponseEntity<Match> findMatch(@PathVariable("id") String matchId);
     
     /**
      * チームにメンバを割り当てる
      * @return matchup infomation (json format)
      */
     @GetMapping("matches/{id}/teams/assign")
-    public ResponseEntity<String> assignTeam(@PathVariable("id") String matcheId);
+    public ResponseEntity<Match> assignTeam(@PathVariable("id") String matchId);
 
     /**
      * チームを発表する
      * @return matchup infomation (json format)
      */
     @GetMapping("matches/{id}/teams")
-    public ResponseEntity<String> showTeams(@PathVariable("id") String matcheId);
+    public ResponseEntity<Match> showTeams(@PathVariable("id") String matchId);
     
     /**
      * マッチを開始する
      */
     @GetMapping("matches/{id}/start")
-    public void startMatch(@PathVariable("id") String matcheId);
+    public void startMatch(@PathVariable("id") String matchId);
 }

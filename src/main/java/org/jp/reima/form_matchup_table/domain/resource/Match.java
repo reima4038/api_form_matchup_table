@@ -33,25 +33,33 @@ public class Match {
     private Date recruitmentData = new Date();
     /** チーム最大人数 **/
     private Integer maxTeamMemberNumber;
-    /** フルメンバー人数 **/
-    private Integer fullMemberNumber;
     /** マッチ開始時刻 **/
     private Date matchDate;
     
     /** チーム **/
     @OneToMany(fetch = FetchType.LAZY)
     @JoinTable(name="teamId")
-    private List<Team> teams = new ArrayList<>();
+    private List<Team> teams;
     
     /** リザーバー **/
     @OneToOne(fetch = FetchType.LAZY)
     @JoinTable(name="reserverId")
-    private Reserver reserver = new Reserver();
-
+    private Reserver reserver;
+    
+    /**
+     * マッチを作成する
+     */
+    public static Match createMatch() {
+        return new Match();
+    }
+    
     /** 
      * マッチ参加者を登録する
      **/
     public void entry(String memberName) {
+        if(Objects.isNull(reserver)) {
+            reserver = new Reserver();
+        }
         reserver.entry(memberName);
     }
     
@@ -67,6 +75,9 @@ public class Match {
      * チームを作成する
      **/
     public void createTeam(String teamName) {
+        if(Objects.isNull(teams)) {
+            teams = new ArrayList<>();
+        }
         teams.add(new Team(teamName));
     }
     
