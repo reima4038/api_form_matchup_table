@@ -5,7 +5,9 @@ import java.util.List;
 import org.jp.reima.form_matchup_table.domain.repository.MatchRepository;
 import org.jp.reima.form_matchup_table.domain.resource.Match;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class MatchJpaRepositoryAdapter implements MatchRepository {
 
     @Autowired
