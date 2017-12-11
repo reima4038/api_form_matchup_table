@@ -46,10 +46,10 @@ public class Match{
     private List<Team> teams;
     
     /** リザーバー **/
-    @OneToOne(cascade=CascadeType.ALL)
+    @OneToMany(cascade=CascadeType.ALL)
     @JoinColumn(name="id")
     @LazyCollection(LazyCollectionOption.FALSE)
-    private Reserver reserver;
+    private List<Reserver> reserver;
     
     /**
      * マッチを作成する
@@ -71,9 +71,9 @@ public class Match{
      **/
     public void entry(String memberName) {
         if(Objects.isNull(reserver)) {
-            reserver = new Reserver();
+            reserver = new ArrayList<>();
         }
-        reserver.entry(memberName);
+        reserver.add(Reserver.entry(memberName));
     }
     
     /** 
@@ -81,7 +81,8 @@ public class Match{
      **/
     public void cancelEntry(String memberName) {
         teams.forEach(team -> team.cancelEntry(memberName));
-        reserver.cancelEntry(memberName);
+        List<Reserver> removeTargets = reserver.stream().filter(member -> Objects.equals(member.getName(), memberName)).collect(Collectors.toList());
+        removeTargets.stream().forEach(target-> reserver.remove(target));
     }
     
     /** 
@@ -121,7 +122,7 @@ public class Match{
                      .get(0);
         if(Objects.nonNull(removeTarget)) {
             List<String> cancelMembers = removeTarget.getTeamMembers().stream().map(TeamMember::getName).collect(Collectors.toList());
-            reserver.entry(cancelMembers);
+            cancelMembers.stream().map(Reserver::entry).forEach(member -> reserver.add(member));
             removeTarget.cancelEntry(cancelMembers);
         }
      }
@@ -137,13 +138,13 @@ public class Match{
      * リザーバーをチームに割り当てる
      **/
     public void assignMembersToTeamsFromReserver() {
-        Collections.shuffle(reserver.getMembers());
-        IntStream.range(0, reserver.getMembers().size())
+        Collections.shuffle(reserver);
+        IntStream.range(0, reserver.size())
                 .forEach(idx -> {
-                    String reserverMemberName = reserver.getMembers().get(idx).getName();
+                    String reserverMemberName = reserver.get(idx).getName();
                     teams.get(idx % teams.size()).entry(reserverMemberName);
                 });
-        reserver.allCancel();
+        reserver.removeAll(reserver);
     }
     
     /** 

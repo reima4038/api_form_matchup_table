@@ -1,17 +1,8 @@
 package org.jp.reima.form_matchup_table.domain.resource;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -28,38 +19,11 @@ public class Reserver {
     @GenericGenerator(name="uuid", strategy = "uuid2")
     private String reserverId;
     
-    /** メンバー **/
-    @OneToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
-    @JoinColumn(name="id")
-    private List<Member> members;
+    private String name;
     
-    /** 登録する **/
-    public void entry(String memberName) {
-        if(Objects.isNull(members)) {
-            members = new ArrayList<>();
-        }
-        Member member = new Member();
-        member.setName(memberName);
-        members.add(member);
-    }
-    
-    /** 登録する **/
-    public void entry(List<String> memberNames) {
-        memberNames.stream().forEach(memberName -> entry(memberName));
-    }
-    
-    /** 登録解除する **/
-    public void cancelEntry(String memberName) {
-        Member removeTarget = members.stream()
-                .filter(member -> Objects.equals(member.getName(), memberName))
-                .collect(Collectors.toList())
-                .get(0);
-        members.remove(removeTarget);
-    }
-    
-    /** 全員登録を解除する **/
-    public void allCancel() {
-        List<String> cancelList = members.stream().map(Member::getName).collect(Collectors.toList());
-        cancelList.forEach(this::cancelEntry);
-    }
+    public static Reserver entry(String name) {
+        Reserver reserver = new Reserver();
+        reserver.setName(name);
+        return reserver;
+    };
 }
