@@ -33,7 +33,7 @@ public class Match{
     @GenericGenerator(name="uuid", strategy = "uuid2")
     private String matchId;
     /** マッチ募集開始時刻 **/
-    private Date recruitmentData = new Date();
+    private Date recruitmentDate = new Date();
     /** チーム最大人数 **/
     private Integer maxTeamMemberNumber;
     /** マッチ開始時刻 **/
@@ -57,12 +57,15 @@ public class Match{
     public static Match createMatch() {
         Match match = new Match();
         match.setTeams(new ArrayList<>());
+        
         Team radiant = new Team();
         radiant.setTeamName("radiant");
         match.getTeams().add(radiant);
+        
         Team dire = new Team();
         dire.setTeamName("dire");
         match.getTeams().add(dire);
+        
         return match;
     }
     
