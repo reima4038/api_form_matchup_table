@@ -56,4 +56,10 @@ public class Reserver {
                 .get(0);
         members.remove(removeTarget);
     }
+    
+    /** 全員登録を解除する **/
+    public void allCancel() {
+        List<String> cancelList = members.stream().map(Member::getName).collect(Collectors.toList());
+        cancelList.forEach(this::cancelEntry);
+    }
 }

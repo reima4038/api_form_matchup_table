@@ -56,6 +56,13 @@ public class Match{
      */
     public static Match createMatch() {
         Match match = new Match();
+        match.setTeams(new ArrayList<>());
+        Team radiant = new Team();
+        radiant.setTeamName("radiant");
+        match.getTeams().add(radiant);
+        Team dire = new Team();
+        dire.setTeamName("dire");
+        match.getTeams().add(dire);
         return match;
     }
     
@@ -113,7 +120,7 @@ public class Match{
                      .collect(Collectors.toList())
                      .get(0);
         if(Objects.nonNull(removeTarget)) {
-            List<String> cancelMembers = removeTarget.getMembers().stream().map(Member::getName).collect(Collectors.toList());
+            List<String> cancelMembers = removeTarget.getTeamMembers().stream().map(TeamMember::getName).collect(Collectors.toList());
             reserver.entry(cancelMembers);
             removeTarget.cancelEntry(cancelMembers);
         }
@@ -135,8 +142,8 @@ public class Match{
                 .forEach(idx -> {
                     String reserverMemberName = reserver.getMembers().get(idx).getName();
                     teams.get(idx % teams.size()).entry(reserverMemberName);
-                    reserver.cancelEntry(reserverMemberName);
                 });
+        reserver.allCancel();
     }
     
     /** 

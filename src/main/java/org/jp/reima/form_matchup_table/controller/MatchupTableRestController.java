@@ -49,6 +49,7 @@ public class MatchupTableRestController implements MatchupTableApi {
     public ResponseEntity<Match> assignTeam(String matchId) {
         Match match = repos.findById(matchId);
         match.assignMembersToTeamsFromReserver();
+        repos.save(match);
         return ResponseEntity.ok(match);
     }
 

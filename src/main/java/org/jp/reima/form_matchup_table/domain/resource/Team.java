@@ -35,35 +35,35 @@ public class Team{
     /** メンバー **/
     @OneToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
     @JoinColumn(name="id")
-    private List<Member> members;
+    private List<TeamMember> TeamMembers;
     
     /** 登録する **/
-    public void entry(String memberName) {
-        if(Objects.isNull(members)) {
-            members = new ArrayList<>();
+    public void entry(String TeamMemberName) {
+        if(Objects.isNull(TeamMembers)) {
+            TeamMembers = new ArrayList<>();
         }
-        Member member = new Member();
-        member.setName(memberName);
-        members.add(member);
+        TeamMember TeamMember = new TeamMember();
+        TeamMember.setName(TeamMemberName);
+        TeamMembers.add(TeamMember);
     }
     
     /** 登録する **/
-    public void entry(List<String> memberNames) {
-        memberNames.stream().forEach(memberName -> entry(memberName));
+    public void entry(List<String> TeamMemberNames) {
+        TeamMemberNames.stream().forEach(TeamMemberName -> entry(TeamMemberName));
     }
     
     /** 登録解除する **/
-    public void cancelEntry(String memberName) {
-        Member removeTarget = members.stream()
-                .filter(member -> Objects.equals(member.getName(), memberName))
+    public void cancelEntry(String TeamMemberName) {
+        TeamMember removeTarget = TeamMembers.stream()
+                .filter(TeamMember -> Objects.equals(TeamMember.getName(), TeamMemberName))
                 .collect(Collectors.toList())
                 .get(0);
-        members.remove(removeTarget);
+        TeamMembers.remove(removeTarget);
     }
     
     /** 登録解除する **/
-    public void cancelEntry(List<String> memberNames) {
-        memberNames.stream().forEach(memberName -> cancelEntry(memberName));
+    public void cancelEntry(List<String> TeamMemberNames) {
+        TeamMemberNames.stream().forEach(TeamMemberName -> cancelEntry(TeamMemberName));
     }
     
     
