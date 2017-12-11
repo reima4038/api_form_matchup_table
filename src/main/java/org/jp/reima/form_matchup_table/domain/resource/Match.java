@@ -8,26 +8,29 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinTable;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
-public class Match {
-    
+@NoArgsConstructor
+public class Match{
     /** MatchId **/
     @Id
-    @GeneratedValue(generator="system-uuid")
-    @GenericGenerator(name="system-uuid", strategy = "uuid")
+    @GeneratedValue(generator="uuid")
+    @GenericGenerator(name="uuid", strategy = "uuid2")
     private String matchId;
     /** マッチ募集開始時刻 **/
     private Date recruitmentData = new Date();
@@ -37,20 +40,23 @@ public class Match {
     private Date matchDate;
     
     /** チーム **/
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinTable(name="teamId")
+    @OneToMany(cascade=CascadeType.ALL)
+    @JoinColumn(name="id")
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<Team> teams;
     
     /** リザーバー **/
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinTable(name="reserverId")
+    @OneToOne(cascade=CascadeType.ALL)
+    @JoinColumn(name="id")
+    @LazyCollection(LazyCollectionOption.FALSE)
     private Reserver reserver;
     
     /**
      * マッチを作成する
      */
     public static Match createMatch() {
-        return new Match();
+        Match match = new Match();
+        return match;
     }
     
     /** 
@@ -78,7 +84,9 @@ public class Match {
         if(Objects.isNull(teams)) {
             teams = new ArrayList<>();
         }
-        teams.add(new Team(teamName));
+        Team team = new Team();
+        team.setTeamName(teamName);
+        teams.add(team);
     }
     
     /**
@@ -114,8 +122,8 @@ public class Match {
     /** 
      * チームを発表する
      **/
-    public String showTeams() {
-        return this.toString();
+    public List<Team> showTeams() {
+        return teams;
     }
     
     /** 

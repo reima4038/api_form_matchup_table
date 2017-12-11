@@ -1,24 +1,28 @@
 package org.jp.reima.form_matchup_table.domain.resource;
 
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 import org.hibernate.annotations.GenericGenerator;
 
+
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
-public class Member {
-    
+@NoArgsConstructor
+public class Member{
+
     /** MemberId **/
     @Id
-    @GeneratedValue(generator="system-uuid")
-    @GenericGenerator(name="system-uuid", strategy = "uuid")
+    @GeneratedValue(generator="uuid")
+    @GenericGenerator(name="uuid", strategy = "uuid2")
     private String memberId;
     
     /** 名前 **/
-    private final String name;
+    private String name;
 
 }

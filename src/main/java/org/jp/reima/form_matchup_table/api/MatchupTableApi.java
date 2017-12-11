@@ -1,6 +1,9 @@
 package org.jp.reima.form_matchup_table.api;
 
+import java.util.List;
+
 import org.jp.reima.form_matchup_table.domain.resource.Match;
+import org.jp.reima.form_matchup_table.domain.resource.Team;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,14 +27,14 @@ public interface MatchupTableApi {
      * @return memberId
      */
     @PutMapping("matches/{id}/members/{name}")
-    public ResponseEntity<String> entryMatch(@PathVariable("id") String matchId, @PathVariable("name") String memberName);
+    public ResponseEntity<Match> entryMatch(@PathVariable("id") String matchId, @PathVariable("name") String memberName);
     
     /**
      * マッチから退出する
      * @return memberId
      */
     @DeleteMapping("matches/{id}/members/{name}")
-    public ResponseEntity<String> leaveMatch(@PathVariable("id") String matchId, @PathVariable("name") String memberName);
+    public ResponseEntity<Match> leaveMatch(@PathVariable("id") String matchId, @PathVariable("name") String memberName);
     
     /**
      * マッチ情報を参照する
@@ -42,21 +45,21 @@ public interface MatchupTableApi {
     
     /**
      * チームにメンバを割り当てる
-     * @return matchup infomation (json format)
+     * @return match-up information (json format)
      */
     @GetMapping("matches/{id}/teams/assign")
     public ResponseEntity<Match> assignTeam(@PathVariable("id") String matchId);
 
     /**
      * チームを発表する
-     * @return matchup infomation (json format)
+     * @return match-up information (json format)
      */
     @GetMapping("matches/{id}/teams")
-    public ResponseEntity<Match> showTeams(@PathVariable("id") String matchId);
+    public ResponseEntity<List<Team>> showTeams(@PathVariable("id") String matchId);
     
     /**
      * マッチを開始する
      */
     @GetMapping("matches/{id}/start")
-    public void startMatch(@PathVariable("id") String matchId);
+    public ResponseEntity<Match> startMatch(@PathVariable("id") String matchId);
 }
