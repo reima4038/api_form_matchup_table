@@ -14,7 +14,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.LazyCollection;
@@ -49,7 +48,7 @@ public class Match{
     @OneToMany(cascade=CascadeType.ALL)
     @JoinColumn(name="id")
     @LazyCollection(LazyCollectionOption.FALSE)
-    private List<Reserver> reserver;
+    private List<Reserver> reservers;
     
     /**
      * マッチを作成する
@@ -73,10 +72,41 @@ public class Match{
      * マッチ参加者を登録する
      **/
     public void entry(String memberName) {
-        if(Objects.isNull(reserver)) {
-            reserver = new ArrayList<>();
+        if(Objects.isNull(reservers)) {
+            reservers = new ArrayList<>();
         }
-        reserver.add(Reserver.entry(memberName));
+        if(notExistsMember(memberName)) {
+            reservers.add(Reserver.entry(memberName));
+        }
+    }
+    
+    /**
+     * 参加者が存在するか確認する
+     * @param memberName
+     * @return true 存在する
+     *         false 存在しない
+     */
+    public boolean existsMember(String memberName) {
+        long reserversCount =
+                reservers.stream()
+                        .filter(reserver -> reserver.getName().equals(memberName))
+                        .count();
+        long teamsCount = 
+                teams.stream()
+                    .flatMap(team -> team.getTeamMembers().stream())
+                    .filter(teamMember -> teamMember.getName().equals(memberName))
+                    .count();
+        return (reserversCount + teamsCount > 0) ? true : false;
+    }
+    
+    /**
+     * 参加者が存在しないことを確認する
+     * @param memberName
+     * @return true 存在しない
+     *         false 存在する
+     **/
+    public boolean notExistsMember(String memberName) {
+        return !existsMember(memberName);
     }
     
     /** 
@@ -84,8 +114,8 @@ public class Match{
      **/
     public void cancelEntry(String memberName) {
         teams.forEach(team -> team.cancelEntry(memberName));
-        List<Reserver> removeTargets = reserver.stream().filter(member -> Objects.equals(member.getName(), memberName)).collect(Collectors.toList());
-        removeTargets.stream().forEach(target-> reserver.remove(target));
+        List<Reserver> removeTargets = reservers.stream().filter(member -> Objects.equals(member.getName(), memberName)).collect(Collectors.toList());
+        removeTargets.stream().forEach(target-> reservers.remove(target));
     }
     
     /** 
@@ -125,7 +155,7 @@ public class Match{
                      .get(0);
         if(Objects.nonNull(removeTarget)) {
             List<String> cancelMembers = removeTarget.getTeamMembers().stream().map(TeamMember::getName).collect(Collectors.toList());
-            cancelMembers.stream().map(Reserver::entry).forEach(member -> reserver.add(member));
+            cancelMembers.stream().map(Reserver::entry).forEach(member -> reservers.add(member));
             removeTarget.cancelEntry(cancelMembers);
         }
      }
@@ -141,13 +171,18 @@ public class Match{
      * リザーバーをチームに割り当てる
      **/
     public void assignMembersToTeamsFromReserver() {
-        Collections.shuffle(reserver);
-        IntStream.range(0, reserver.size())
+        Collections.shuffle(reservers);
+        List<Reserver> removeTargets = new ArrayList<>();
+        IntStream.range(0, reservers.size())
                 .forEach(idx -> {
-                    String reserverMemberName = reserver.get(idx).getName();
-                    teams.get(idx % teams.size()).entry(reserverMemberName);
+                        Reserver reserver = reservers.get(idx);
+                        Team entryTarget = teams.get(idx % teams.size());
+                        if(entryTarget.getTeamMembers().size() < maxTeamMemberNumber) {
+                            entryTarget.entry(reserver.getName());
+                            removeTargets.add(reserver);
+                        }
                 });
-        reserver.removeAll(reserver);
+        reservers.removeAll(removeTargets);
     }
     
     /** 
