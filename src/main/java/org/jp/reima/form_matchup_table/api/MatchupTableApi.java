@@ -47,7 +47,7 @@ public interface MatchupTableApi {
      * チームにメンバを割り当てる
      * @return match-up information (json format)
      */
-    @GetMapping("matches/{id}/teams/assign")
+    @PutMapping("matches/{id}/teams/assign")
     public ResponseEntity<Match> assignTeam(@PathVariable("id") String matchId);
 
     /**
@@ -60,6 +60,6 @@ public interface MatchupTableApi {
     /**
      * マッチを開始する
      */
-    @GetMapping("matches/{id}/start")
+    @PutMapping("matches/{id}/start")
     public ResponseEntity<Match> startMatch(@PathVariable("id") String matchId);
 }
