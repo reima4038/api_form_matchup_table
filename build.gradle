@@ -34,6 +34,10 @@ dependencies {
     // swagger	
 	compile('io.springfox:springfox-swagger-ui:2.6.1')
     compile('io.springfox:springfox-swagger2:2.6.1')
+    
+    // javax.xml.bind/jaxb-api
+    compile('javax.xml.bind:jaxb-api:2.3.0')
+    
 }
 
 
