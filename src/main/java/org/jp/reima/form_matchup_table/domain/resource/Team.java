@@ -35,30 +35,33 @@ public class Team{
     /** メンバー **/
     @OneToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
     @JoinColumn(name="id")
-    private List<TeamMember> TeamMembers;
+    private List<TeamMember> teamMembers;
     
     /** 登録する **/
-    public void entry(String TeamMemberName) {
-        if(Objects.isNull(TeamMembers)) {
-            TeamMembers = new ArrayList<>();
+    public void entry(String teamMemberName) {
+        if(Objects.isNull(teamMembers)) {
+            teamMembers = new ArrayList<>();
         }
         TeamMember TeamMember = new TeamMember();
-        TeamMember.setName(TeamMemberName);
-        TeamMembers.add(TeamMember);
+        TeamMember.setName(teamMemberName);
+        teamMembers.add(TeamMember);
     }
     
     /** 登録する **/
-    public void entry(List<String> TeamMemberNames) {
-        TeamMemberNames.stream().forEach(TeamMemberName -> entry(TeamMemberName));
+    public void entry(List<String> teamMemberNames) {
+        teamMemberNames.stream().forEach(TeamMemberName -> entry(TeamMemberName));
     }
     
     /** 登録解除する **/
-    public void cancelEntry(String TeamMemberName) {
-        TeamMember removeTarget = TeamMembers.stream()
-                .filter(TeamMember -> Objects.equals(TeamMember.getName(), TeamMemberName))
-                .collect(Collectors.toList())
-                .get(0);
-        TeamMembers.remove(removeTarget);
+    public void cancelEntry(String teamMemberName) {
+        if(Objects.nonNull(teamMembers)) {
+            List<TeamMember> removeTargets = teamMembers.stream()
+                    .filter(teamMember -> Objects.equals(teamMember.getName(), teamMemberName))
+                    .collect(Collectors.toList());
+            if(removeTargets.size() > 0) {
+                teamMembers.remove(removeTargets.get(0));
+            }
+        }
     }
     
     /** 登録解除する **/
