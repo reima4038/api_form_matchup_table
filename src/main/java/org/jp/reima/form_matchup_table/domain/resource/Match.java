@@ -113,9 +113,16 @@ public class Match{
      * マッチ参加者の登録を解除する
      **/
     public void cancelEntry(String memberName) {
-        teams.forEach(team -> team.cancelEntry(memberName));
-        List<Reserver> removeTargets = reservers.stream().filter(member -> Objects.equals(member.getName(), memberName)).collect(Collectors.toList());
-        removeTargets.stream().forEach(target-> reservers.remove(target));
+        if(Objects.nonNull(teams)) {
+            teams.forEach(team -> team.cancelEntry(memberName));
+        }
+        if(Objects.nonNull(reservers)){
+            List<Reserver> removeTargets = reservers.stream()
+                    .filter(member -> Objects.equals(member.getName(), memberName))
+                    .collect(Collectors.toList());
+            removeTargets.stream()
+                .forEach(target-> reservers.remove(target));
+        }
     }
     
     /** 
@@ -134,13 +141,12 @@ public class Match{
      * チーム登録を解除する
      */
     public void removeTeam(String teamName) {
-        Team removeTarget =
+        List<Team> removeTargets =
                 teams.stream()
                      .filter(team -> Objects.equals(team.getTeamName(), teamName))
-                     .collect(Collectors.toList())
-                     .get(0);
-        if(Objects.nonNull(removeTarget)) {
-            teams.remove(removeTarget);
+                     .collect(Collectors.toList());
+        if(removeTargets.size() > 0) {
+            teams.remove(removeTargets.get(0));
         }
     }
     
@@ -148,12 +154,12 @@ public class Match{
      * チームを解散する
      **/
     public void breakTeamUp(String teamName) {
-        Team removeTarget =
+        List<Team> removeTargets =
                 teams.stream()
                      .filter(team -> Objects.equals(team.getTeamName(), teamName))
-                     .collect(Collectors.toList())
-                     .get(0);
-        if(Objects.nonNull(removeTarget)) {
+                     .collect(Collectors.toList());
+        if(removeTargets.size() > 0) {
+            Team removeTarget = removeTargets.get(0);
             List<String> cancelMembers = removeTarget.getTeamMembers().stream().map(TeamMember::getName).collect(Collectors.toList());
             cancelMembers.stream().map(Reserver::entry).forEach(member -> reservers.add(member));
             removeTarget.cancelEntry(cancelMembers);
