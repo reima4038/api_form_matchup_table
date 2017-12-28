@@ -49,6 +49,13 @@ public interface MatchupTableApi {
      */
     @PutMapping("matches/{id}/teams/assign")
     public ResponseEntity<Match> assignTeam(@PathVariable("id") String matchId);
+    
+    /**
+     * チームにメンバを振り分けなおす
+     * @return match-up information (json format)
+     */
+    @PutMapping("matches/{id}/teams/reassign")
+    public ResponseEntity<Match> reassignTeam(@PathVariable("id") String matchId);
 
     /**
      * チームを発表する

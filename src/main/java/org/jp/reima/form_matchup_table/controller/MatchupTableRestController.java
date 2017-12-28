@@ -1,6 +1,8 @@
 package org.jp.reima.form_matchup_table.controller;
 
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.jp.reima.form_matchup_table.api.MatchupTableApi;
 import org.jp.reima.form_matchup_table.domain.repository.MatchRepository;
@@ -52,6 +54,17 @@ public class MatchupTableRestController implements MatchupTableApi {
         repos.save(match);
         return ResponseEntity.ok(match);
     }
+    
+    @Override
+    public ResponseEntity<Match> reassignTeam(String matchId) {
+        Match match = repos.findById(matchId);
+        match.getTeams().stream()
+                        .map(team -> team.getTeamName())
+                        .forEach(teamName -> match.breakTeamUp(teamName));
+        match.assignMembersToTeamsFromReserver();
+        repos.save(match);
+        return ResponseEntity.ok(match);
+    }
 
     @Override
     public ResponseEntity<List<Team>> showTeams(String matchId) {
@@ -64,5 +77,6 @@ public class MatchupTableRestController implements MatchupTableApi {
         match.startMatch();
         return ResponseEntity.ok(match);
     }
+
 
 }
