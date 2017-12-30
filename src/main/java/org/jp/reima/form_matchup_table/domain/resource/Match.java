@@ -18,6 +18,7 @@ import javax.persistence.OneToMany;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
+import org.jp.reima.form_matchup_table.domain.resource.pattern.MatchPatterns;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -54,18 +55,7 @@ public class Match{
      * マッチを作成する
      */
     public static Match createMatch() {
-        Match match = new Match();
-        match.setTeams(new ArrayList<>());
-        
-        Team radiant = new Team();
-        radiant.setTeamName("radiant");
-        match.getTeams().add(radiant);
-        
-        Team dire = new Team();
-        dire.setTeamName("dire");
-        match.getTeams().add(dire);
-        
-        return match;
+        return MatchPatterns.Dota2();
     }
     
     /** 
