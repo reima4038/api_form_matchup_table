@@ -58,10 +58,7 @@ public class MatchupTableRestController implements MatchupTableApi {
     @Override
     public ResponseEntity<Match> reassignTeam(String matchId) {
         Match match = repos.findById(matchId);
-        match.getTeams().stream()
-                        .map(team -> team.getTeamName())
-                        .forEach(teamName -> match.breakTeamUp(teamName));
-        match.assignMembersToTeamsFromReserver();
+        match.reassignMembersToTeams();
         repos.save(match);
         return ResponseEntity.ok(match);
     }

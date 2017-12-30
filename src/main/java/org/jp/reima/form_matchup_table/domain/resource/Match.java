@@ -192,6 +192,16 @@ public class Match{
     }
     
     /** 
+     * チームメンバーの割当てを再度行う
+     **/
+    public void reassignMembersToTeams() {
+        teams.stream()
+            .map(team -> team.getTeamName())
+            .forEach(teamName -> this.breakTeamUp(teamName));
+        this.assignMembersToTeamsFromReserver();
+    }
+    
+    /** 
      * マッチを開始する
      **/    
     public void startMatch() {
