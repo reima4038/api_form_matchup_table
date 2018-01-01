@@ -55,7 +55,7 @@ public class Match{
      * マッチを作成する
      */
     public static Match createMatch() {
-        return MatchPatterns.Dota2();
+        return MatchPatterns.dota2();
     }
     
     /** 
@@ -171,13 +171,15 @@ public class Match{
         List<Reserver> removeTargets = new ArrayList<>();
         IntStream.range(0, reservers.size())
                 .forEach(idx -> {
-                        Reserver reserver = reservers.get(idx);
-                        Team entryTarget = teams.get(idx % teams.size());
-                        if(entryTarget.getTeamMembers().size() < maxTeamMemberNumber) {
-                            entryTarget.entry(reserver.getName());
-                            removeTargets.add(reserver);
-                        }
+                    Reserver reserver = reservers.get(idx);
+                    Team entryTarget = teams.get(idx % teams.size());
+                    if(entryTarget.getTeamMembers().size() < maxTeamMemberNumber) {
+                        entryTarget.entry(reserver.getName());
+                        removeTargets.add(reserver);
+                    }
                 });
+        teams.stream()
+            .forEach(team -> team.setRoles(MatchPatterns.dota2Roles()));
         reservers.removeAll(removeTargets);
     }
     

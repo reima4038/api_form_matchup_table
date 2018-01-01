@@ -24,5 +24,7 @@ public class TeamMember{
     
     /** 名前 **/
     private String name;
-
+    
+    /** 役割 **/
+    private String role;
 }
