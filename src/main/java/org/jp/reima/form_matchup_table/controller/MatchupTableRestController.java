@@ -10,6 +10,7 @@ import org.jp.reima.form_matchup_table.domain.resource.Match;
 import org.jp.reima.form_matchup_table.domain.resource.Team;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -27,7 +28,7 @@ public class MatchupTableRestController implements MatchupTableApi {
     }
 
     @Override
-    public ResponseEntity<Match> entryMatch(String matchId, String memberName) {
+    public ResponseEntity<Match> entryMatch(@PathVariable("id") String matchId, @PathVariable("name") String memberName) {
         Match match = repos.findById(matchId);
         match.entry(memberName);
         repos.save(match);
@@ -35,7 +36,7 @@ public class MatchupTableRestController implements MatchupTableApi {
     }
 
     @Override
-    public ResponseEntity<Match> leaveMatch(String matchId, String memberName) {
+    public ResponseEntity<Match> leaveMatch(@PathVariable("id") String matchId, @PathVariable("name") String memberName) {
         Match match = repos.findById(matchId);
         match.cancelEntry(memberName);
         repos.save(match);
@@ -43,12 +44,12 @@ public class MatchupTableRestController implements MatchupTableApi {
     }
 
     @Override
-    public ResponseEntity<Match> findMatch(String matchId) {
+    public ResponseEntity<Match> findMatch(@PathVariable("id") String matchId) {
         return ResponseEntity.ok(repos.findById(matchId));
     }
 
     @Override
-    public ResponseEntity<Match> assignTeam(String matchId) {
+    public ResponseEntity<Match> assignTeam(@PathVariable("id") String matchId) {
         Match match = repos.findById(matchId);
         match.assignMembersToTeamsFromReserver();
         repos.save(match);
@@ -56,7 +57,7 @@ public class MatchupTableRestController implements MatchupTableApi {
     }
     
     @Override
-    public ResponseEntity<Match> reassignTeam(String matchId) {
+    public ResponseEntity<Match> reassignTeam(@PathVariable("id") String matchId) {
         Match match = repos.findById(matchId);
         match.reassignMembersToTeams();
         repos.save(match);
@@ -64,12 +65,12 @@ public class MatchupTableRestController implements MatchupTableApi {
     }
 
     @Override
-    public ResponseEntity<List<Team>> showTeams(String matchId) {
+    public ResponseEntity<List<Team>> showTeams(@PathVariable("id") String matchId) {
         return ResponseEntity.ok(repos.findById(matchId).showTeams());
     }
 
     @Override
-    public ResponseEntity<Match> startMatch(String matchId) {
+    public ResponseEntity<Match> startMatch(@PathVariable("id") String matchId) {
         Match match = repos.findById(matchId);
         match.startMatch();
         return ResponseEntity.ok(match);
