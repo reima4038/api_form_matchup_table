@@ -25,6 +25,8 @@ public class MatchPatterns {
         dire.setTeamName("Dire");
         match.getTeams().add(dire);
         
+        match.setMaxTeamMemberNumber(5);
+        
         return match;
     }
 }

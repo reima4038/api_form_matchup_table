@@ -55,7 +55,7 @@ public class MatchupTableApiTest {
         final String uri = "matches/{id}/members/{name}";
         
         // given
-        String id = repos.save(new Match());
+        String id = repos.save(Match.createMatch());
         String player = "testPlayer";
         
         // when
@@ -75,7 +75,23 @@ public class MatchupTableApiTest {
      */
     @Test
     public void マッチから退出する() {
+        final String uri = "matches/{id}/members/{name}";
         
+        // given
+        Match match = Match.createMatch();
+        String player = "testPlayer";
+        match.entry(player);
+        String id = repos.save(match);
+        
+        // when
+        RestAssured
+                .given()
+                    .pathParam("id", id)
+                    .pathParam("name", player)
+                .when()
+                    .delete(uri)
+                .then()
+                    .statusCode(STATUS_CODE_SUCCESS);
     }
     /**
      * マッチを検索する
@@ -83,7 +99,20 @@ public class MatchupTableApiTest {
      */    
     @Test
     public void マッチを検索する() {
+        final String uri = "matches/{id}";
+                
+        // given
+        Match match = Match.createMatch();
+        String id = repos.save(match);
         
+        // when
+        RestAssured
+                .given()
+                    .pathParam("id", id)
+                .when()
+                    .get(uri)
+                .then()
+                    .statusCode(STATUS_CODE_SUCCESS);
     }
     
     /**
@@ -92,7 +121,22 @@ public class MatchupTableApiTest {
      */
     @Test
     public void チームにメンバを割り当てる() {
+        final String uri = "matches/{id}/teams/assign";
         
+        // given
+        Match match = Match.createMatch();
+        String player = "testPlayer";
+        match.entry(player);
+        String id = repos.save(match);
+        
+        // when
+        RestAssured
+                .given()
+                    .pathParam("id", id)
+                .when()
+                    .put(uri)
+                .then()
+                    .statusCode(STATUS_CODE_SUCCESS);
     }
     
     /**
@@ -101,7 +145,22 @@ public class MatchupTableApiTest {
      */
     @Test
     public void チームにメンバを振り分けなおす() {
+        final String uri = "matches/{id}/teams/reassign";
         
+        // given
+        Match match = Match.createMatch();
+        String player = "testPlayer";
+        match.entry(player);
+        String id = repos.save(match);
+        
+        // when
+        RestAssured
+                .given()
+                    .pathParam("id", id)
+                .when()
+                    .put(uri)
+                .then()
+                    .statusCode(STATUS_CODE_SUCCESS);
     }
     
     /**
@@ -110,7 +169,19 @@ public class MatchupTableApiTest {
      */
     @Test
     public void チームを発表する() {
+        final String uri = "matches/{id}/teams";
         
+        // given
+        String id = repos.save(Match.createMatch());
+        
+        // when
+        RestAssured
+                .given()
+                    .pathParam("id", id)
+                .when()
+                    .get(uri)
+                .then()
+                    .statusCode(STATUS_CODE_SUCCESS);
     }
     
     /**
@@ -118,6 +189,19 @@ public class MatchupTableApiTest {
      */
     @Test
     public void マッチを開始する() {
+        final String uri = "matches/{id}/start";
         
+        // given
+        Match match = Match.createMatch();
+        String id = repos.save(match);
+        
+        // when
+        RestAssured
+                .given()
+                    .pathParam("id", id)
+                .when()
+                    .put(uri)
+                .then()
+                    .statusCode(STATUS_CODE_SUCCESS);
     }
 }

@@ -77,6 +77,12 @@ public class Match{
      *         false 存在しない
      */
     public boolean existsMember(String memberName) {
+        if(Objects.isNull(reservers) ||
+                Objects.isNull(teams) ||
+                reservers.size() == 0 ||
+                teams.size() == 0) {
+            return false;
+        }
         long reserversCount =
                 reservers.stream()
                         .filter(reserver -> reserver.getName().equals(memberName))
